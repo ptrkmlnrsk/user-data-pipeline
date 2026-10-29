@@ -1,11 +1,19 @@
 import requests
 
+# from user_data_pipeline.models.response import User
+
 
 class JSONPlaceholderClient:
     # rozważyć wstrzykniecie sesji do inita
-    def __init__(self, base_url: str, timeout: float = 10.0):
+    def __init__(
+        self,
+        base_url: str,
+        timeout: float = 10.0,
+        session: requests.Session | None = None,
+    ):
         self.base_url = base_url
         self.timeout = timeout
+        self.session = session or requests.Session()  # jeśli nie poda to zrobi sesje
 
     def _get(self, endpoint: str) -> list[dict]:
         "HTTP request, timeout, status, JSON"
@@ -13,7 +21,7 @@ class JSONPlaceholderClient:
 
         url = f"{self.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
 
-        response = requests.get(url, timeout=self.timeout)
+        response = self.session.get(url, timeout=self.timeout)
         response.raise_for_status()
 
         fetched_data = response.json()
