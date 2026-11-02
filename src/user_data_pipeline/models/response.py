@@ -1,12 +1,9 @@
 from pydantic import BaseModel
 
 
-class User(BaseModel):
-    id: str
-    name: str
-    username: str
-    email: str
-    company: Company
+class Geo(BaseModel):
+    lat: str
+    lng: str
 
 
 class Address(BaseModel):
@@ -19,13 +16,19 @@ class Address(BaseModel):
 
 class Company(BaseModel):
     name: str
-    catch_phrase: str
+    catchPhrase: str
     bs: str
 
 
-class Geo(BaseModel):
-    lat: str
-    lon: str
+class User(BaseModel):
+    id: int
+    name: str
+    username: str
+    email: str
+    address: Address
+    phone: str
+    website: str
+    company: Company
 
 
 # user = User.model_validate()

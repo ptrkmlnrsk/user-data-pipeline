@@ -21,22 +21,32 @@ class FakeResponse:
         return self.payload
 
 
-def test_get_returns_json_list(monkeypatch):
-    client = JSONPlaceholderClient(base_url="https://example.test/")
+@pytest.fixture
+def client():
+    return JSONPlaceholderClient(base_url="https://example.test/")
 
+
+def test_get_users(client, monkeypatch):
     def fake_get(base_url, timeout):
         assert base_url == "https://example.test/users"
         assert timeout == 10.0
-
         return FakeResponse([{"id": 1}])
 
     monkeypatch.setattr(client.session, "get", fake_get)
     assert client.get_users() == [{"id": 1}]
 
 
-def test_get_raises_for_http_error(monkeypatch):
-    client = JSONPlaceholderClient(base_url="https://example.test/")
+def test_get_posts(client, monkeypatch):
+    def fake_get(base_url, timeout):
+        assert base_url == "https://example.test/posts"
+        assert timeout == 10.0
+        return FakeResponse([{"id": 2}])
 
+    monkeypatch.setattr(client.session, "get", fake_get)
+    assert client.get_posts() == [{"id": 2}]
+
+
+def test_get_raises_for_http_error(client, monkeypatch):
     def fake_get(base_url, timeout):
         return FakeResponse([], status_code=500)
 
