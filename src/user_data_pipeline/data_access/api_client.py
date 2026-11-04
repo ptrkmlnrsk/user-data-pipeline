@@ -20,9 +20,18 @@ class JSONPlaceholderClient:
         # is shared by other get methods
 
         url = f"{self.base_url.rstrip('/')}/{endpoint.lstrip('/')}"
+        try:
+            response = self.session.get(url, timeout=self.timeout)
+            response.raise_for_status()
 
-        response = self.session.get(url, timeout=self.timeout)
-        response.raise_for_status()
+        except requests.exceptions.Timeout:
+            raise RuntimeError(f"Request to {url} timed out") from exec
+
+        except requests.exceptions.ConnectionError:
+            raise RuntimeError(f"Connection failed for {url}") from exec
+
+        except requests.exceptions.HTTPError:
+            raise RuntimeError(f"HTTP request failed for {url}") from exec
 
         fetched_data = response.json()
 
