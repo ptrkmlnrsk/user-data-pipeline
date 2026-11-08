@@ -37,11 +37,11 @@ class JSONPlaceholderClient:
 
         # zwrócić na tym etapie pydantic
         # modele często powstają jako pierwsze po rozmowach z zespołem dostarczającym API
-        if not isinstance(fetched_data, list):
-            raise TypeError("Expected a list of dictionaries")
-
-        if not all(isinstance(item, dict) for item in fetched_data):
-            raise TypeError("Expected list of dictionaries")
+        # if not isinstance(fetched_data, list):
+        #     raise TypeError("Expected a list of dictionaries")
+        #
+        # if not all(isinstance(item, dict) for item in fetched_data):
+        #     raise TypeError("Expected list of dictionaries")
 
         return fetched_data
 

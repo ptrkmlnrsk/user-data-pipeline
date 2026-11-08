@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class Post(BaseModel):
+class PostResponse(BaseModel):
     userId: int
     id: int
     title: str

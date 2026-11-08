@@ -1,4 +1,5 @@
 from user_data_pipeline.data_access.api_client import JSONPlaceholderClient
+
 from user_data_pipeline.validation.validators import validate_posts, validate_users
 
 
@@ -7,8 +8,6 @@ def run():
 
     users_raw = client.get_users()
     posts_raw = client.get_posts()
-
-    print(users_raw)
 
     validate_users(users_raw)
     validate_posts(posts_raw)

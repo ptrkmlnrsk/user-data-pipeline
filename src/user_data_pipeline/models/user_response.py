@@ -20,7 +20,7 @@ class Company(BaseModel):
     bs: str
 
 
-class User(BaseModel):
+class UserResponse(BaseModel):
     id: int
     name: str
     username: str
@@ -29,6 +29,3 @@ class User(BaseModel):
     phone: str
     website: str
     company: Company
-
-
-# user = User.model_validate()
