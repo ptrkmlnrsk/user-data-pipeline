@@ -1,5 +1,7 @@
 import requests
 
+from user_data_pipeline.data_access.exceptions import APIRequestError
+
 # from user_data_pipeline.models.response import User
 
 
@@ -24,24 +26,22 @@ class JSONPlaceholderClient:
             response = self.session.get(url, timeout=self.timeout)
             response.raise_for_status()
 
-        except requests.exceptions.Timeout:
-            raise RuntimeError(f"Request to {url} timed out") from exec
+        except requests.exceptions.Timeout as exc:
+            raise RuntimeError(f"Request to {url} timed out") from exc
 
-        except requests.exceptions.ConnectionError:
-            raise RuntimeError(f"Connection failed for {url}") from exec
+        except requests.exceptions.ConnectionError as exc:
+            raise RuntimeError(f"Connection failed for {url}") from exc
 
-        except requests.exceptions.HTTPError:
-            raise RuntimeError(f"HTTP request failed for {url}") from exec
+        except requests.exceptions.HTTPError as exc:
+            raise APIRequestError(f"HTTP request failed for {url}") from exc
+
+        # except requests.exceptions.RequestException as exc:
+        #     raise APIRequestError(f"Failed to fetch {url}") from exc
 
         fetched_data = response.json()
 
         # zwrócić na tym etapie pydantic
         # modele często powstają jako pierwsze po rozmowach z zespołem dostarczającym API
-        # if not isinstance(fetched_data, list):
-        #     raise TypeError("Expected a list of dictionaries")
-        #
-        # if not all(isinstance(item, dict) for item in fetched_data):
-        #     raise TypeError("Expected list of dictionaries")
 
         return fetched_data
 

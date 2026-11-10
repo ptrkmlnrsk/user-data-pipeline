@@ -3,7 +3,8 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from src.user_data_pipeline.data_access.api_client import JSONPlaceholderClient
+from user_data_pipeline.data_access.api_client import JSONPlaceholderClient
+from user_data_pipeline.data_access.exceptions import APIRequestError
 
 
 class FakeResponse:
@@ -48,11 +49,13 @@ def test_get_posts(client, monkeypatch):
 
 def test_get_raises_for_http_error(client, monkeypatch):
     def fake_get(base_url, timeout):
+        assert base_url == "https://example.test/users"
+        assert timeout == 10.0
         return FakeResponse([], status_code=500)
 
     monkeypatch.setattr(client.session, "get", fake_get)
 
-    with pytest.raises(requests.HTTPError):
+    with pytest.raises(APIRequestError, match="HTTP request failed"):
         client.get_users()
 
 
