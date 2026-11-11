@@ -9,7 +9,7 @@ on:
 
 jobs:
   run-test:
-    runs-on:
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
@@ -19,6 +19,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
+
 
       - name: Install Python
         run: uv python Install
