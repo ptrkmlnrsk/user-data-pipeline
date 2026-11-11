@@ -2,7 +2,7 @@ name: api download test ci
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "1-us-01/US-01-api-extraction"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
