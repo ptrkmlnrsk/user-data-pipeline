@@ -21,7 +21,7 @@ class Company(BaseModel):
 
 
 class UserResponse(BaseModel):
-    id: int
+    id: int = Field(strict=True)
     name: str
     username: str
     email: str
