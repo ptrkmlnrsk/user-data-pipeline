@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 from pydantic import ValidationError
 
@@ -6,7 +8,7 @@ from user_data_pipeline.validation.validators import validate_users
 
 
 @pytest.fixture
-def valid_user_data() -> dict:
+def valid_user_data() -> dict[str, Any]:
     return {
         "id": 1,
         "name": "Leanne Graham",
@@ -57,7 +59,7 @@ def test_geo_invalid_lat_greater_than():
     assert errors[0]["type"] == ("less_than_equal")
 
 
-def test_accept_coordinates_as_strings(valid_user_data: dict):
+def test_accept_coordinates_as_strings(valid_user_data: dict[str, Any]):
     users_raw = [valid_user_data]
     validation_result = validate_users(users_raw=users_raw)
 
@@ -67,7 +69,7 @@ def test_accept_coordinates_as_strings(valid_user_data: dict):
     assert isinstance(validation_result[0].address.geo.lng, float)
 
 
-def test_reject_user_id_as_string(valid_user_data: dict):
+def test_reject_user_id_as_string(valid_user_data: dict[str, Any]):
     valid_user_data["id"] = "1"
     users_raw = [valid_user_data]
 
@@ -82,7 +84,7 @@ def test_reject_user_id_as_string(valid_user_data: dict):
 # test integracyjny sprawdza data flow
 
 
-def test_validate_users_data(valid_user_data: dict):  # test integracyjny
+def test_validate_users_data(valid_user_data: dict[str, Any]):  # test integracyjny
     users_raw = [valid_user_data]
 
     result = validate_users(users_raw)
@@ -92,7 +94,7 @@ def test_validate_users_data(valid_user_data: dict):  # test integracyjny
     assert result[0].id == 1
 
 
-def test_validate_incomplete_users_data(valid_user_data: dict):
+def test_validate_incomplete_users_data(valid_user_data: dict[str, Any]):
     del valid_user_data["address"]  # test integracyjny
     users_raw = [valid_user_data]
 
@@ -104,9 +106,10 @@ def test_validate_incomplete_users_data(valid_user_data: dict):
     assert errors[0]["loc"] == (0, "address")
 
 
-def test_invalid_field_types_in_users_data(valid_user_data: dict):  # test integracyjny
+def test_invalid_field_types_in_users_data(
+    valid_user_data: dict[str, Any],
+):  # test integracyjny
     valid_user_data["id"] = "1"
-    valid_user_data["address"]["zipcode"] = 929983874
     users_raw = [valid_user_data]
 
     with pytest.raises(ValidationError):
