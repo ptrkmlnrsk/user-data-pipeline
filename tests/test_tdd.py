@@ -9,8 +9,10 @@ def test_calculate_total():
     assert result == 60
 
 
-def test_calculate_total_():
-    pass
+# @pytest.mark.superfast # oznaczanie wolnych testow
+# def test_calculate_total_(valid_user_data):
+#     print(valid_user_data.get("id"))
+#     assert False
 
 
 # powiedziec chatowi zeby rozbijal problem uzywajac elephant carpaccio

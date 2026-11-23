@@ -525,7 +525,7 @@ dependencies = [
     { name = "requests" },
 ]
 
-[package.dev-dependencies]
+[package.optional-dependencies]
 dev = [
     { name = "pytest" },
     { name = "pytest-cov" },
@@ -535,14 +535,11 @@ dev = [
 requires-dist = [
     { name = "pre-commit", specifier = ">=4.7.0" },
     { name = "pydantic", specifier = ">=2.14.1" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1" },
+    { name = "pytest-cov", marker = "extra == 'dev'", specifier = ">=7.1.0" },
     { name = "requests", specifier = ">=2.34.2" },
 ]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=9.1.1" },
-    { name = "pytest-cov", specifier = ">=7.1.0" },
-]
+provides-extras = ["dev"]
 
 [[package]]
 name = "virtualenv"

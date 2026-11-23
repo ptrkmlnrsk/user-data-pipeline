@@ -3,32 +3,9 @@ from typing import Any
 import pytest
 from pydantic import ValidationError
 
+from user_data_pipeline.models.post_response import PostResponse
 from user_data_pipeline.models.user_response import Geo, UserResponse
-from user_data_pipeline.validation.validators import validate_users
-
-
-@pytest.fixture
-def valid_user_data() -> dict[str, Any]:
-    return {
-        "id": 1,
-        "name": "Leanne Graham",
-        "username": "Bret",
-        "email": "Sincere@april.biz",
-        "address": {
-            "street": "Kulas Light",
-            "suite": "Apt. 556",
-            "city": "Gwenbofrough",
-            "zipcode": "92998-3874",
-            "geo": {"lat": "-37.3159", "lng": "81.1496"},
-        },
-        "phone": "1-770-736-8031 x56442",
-        "website": "hildegard.org",
-        "company": {
-            "name": "Romaguera-Crona",
-            "catchPhrase": "Multi-layered client-server neural-net",
-            "bs": "harness real-time e-markets",
-        },
-    }
+from user_data_pipeline.validation.validators import validate_posts, validate_users
 
 
 @pytest.mark.parametrize(
@@ -95,7 +72,7 @@ def test_validate_users_data(valid_user_data: dict[str, Any]):  # test integracy
 
 
 def test_validate_incomplete_users_data(valid_user_data: dict[str, Any]):
-    del valid_user_data["address"]  # test integracyjny
+    del valid_user_data["address"]
     users_raw = [valid_user_data]
 
     with pytest.raises(ValidationError) as exc_info:
@@ -106,11 +83,22 @@ def test_validate_incomplete_users_data(valid_user_data: dict[str, Any]):
     assert errors[0]["loc"] == (0, "address")
 
 
-def test_invalid_field_types_in_users_data(
-    valid_user_data: dict[str, Any],
-):  # test integracyjny
-    valid_user_data["id"] = "1"
-    users_raw = [valid_user_data]
+def test_validate_posts(valid_post_data: dict[str, Any]) -> None:
+    posts_raw = [valid_post_data]
+    validation_result = validate_posts(posts_raw=posts_raw)
 
-    with pytest.raises(ValidationError):
-        validate_users(users_raw)
+    assert len(validation_result) == 1
+    assert isinstance(validation_result[0], PostResponse)
+    assert validation_result[0]["id"] == 1
+
+
+def test_reject_user_id(valid_post_data: dict[str, Any]):
+    valid_post_data["userId"] = "1"
+    posts_raw = [valid_post_data]
+
+    with pytest.raises(ValidationError) as exc_info:
+        validate_posts(posts_raw)
+
+    errors = exc_info.value.errors()
+
+    assert errors[0]["loc"] == (0, "userId")
