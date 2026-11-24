@@ -58,9 +58,6 @@ def test_reject_user_id_as_string(valid_user_data: dict[str, Any]):
     assert errors[0]["loc"] == (0, "id")
 
 
-# test integracyjny sprawdza data flow
-
-
 def test_validate_users_data(valid_user_data: dict[str, Any]):  # test integracyjny
     users_raw = [valid_user_data]
 
@@ -89,10 +86,10 @@ def test_validate_posts(valid_post_data: dict[str, Any]) -> None:
 
     assert len(validation_result) == 1
     assert isinstance(validation_result[0], PostResponse)
-    assert validation_result[0]["id"] == 1
+    assert validation_result[0].id == 1
 
 
-def test_reject_user_id(valid_post_data: dict[str, Any]):
+def test_reject_post_user_id_as_string(valid_post_data: dict[str, Any]):
     valid_post_data["userId"] = "1"
     posts_raw = [valid_post_data]
 
@@ -102,3 +99,17 @@ def test_reject_user_id(valid_post_data: dict[str, Any]):
     errors = exc_info.value.errors()
 
     assert errors[0]["loc"] == (0, "userId")
+    assert errors[0]["type"] == "int_type"
+
+
+def test_reject_post_id_as_string(valid_post_data: dict[str, Any]):
+    valid_post_data["id"] = "1"
+    posts_raw = [valid_post_data]
+
+    with pytest.raises(ValidationError) as exc_info:
+        validate_posts(posts_raw)
+
+    errors = exc_info.value.errors()
+
+    assert errors[0]["loc"] == (0, "id")
+    assert errors[0]["type"] == "int_type"
